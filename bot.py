@@ -31,24 +31,25 @@ MESSAGE = """🔥 **Добро пожаловать!** 🔥
 async def send_message(message: types.Message):
     if message.from_user.id in ALLOWED_USERS:
         chat = message.chat
-        
+
         # Получаем список закреплённых сообщений
-        pinned_messages = await bot.get_chat(chat.id)
-        
-        # Проверяем, есть ли уже закреплённое сообщение с нужным текстом
-        already_pinned = False
-        if pinned_messages.pinned_message and pinned_messages.pinned_message.text == MESSAGE:
-            already_pinned = True
-        
-        if not already_pinned:
-            sent_message = await message.answer(MESSAGE, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
-            await sent_message.pin()
-            await asyncio.sleep(1)  # Даем время на закрепление
-            await message.delete()  # Удаляем сообщение о закреплении
-        else:
+        chat_info = await bot.get_chat(chat.id)
+        pinned_message = chat_info.pinned_message
+
+        # Проверяем, уже закреплено ли нужное сообщение
+        if pinned_message and pinned_message.text == MESSAGE:
             dot_message = await message.reply("•")
             await asyncio.sleep(5)
             await dot_message.delete()
+        else:
+            sent_message = await message.answer(MESSAGE, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+            pin_notification = await sent_message.pin()
+
+            # Ожидаем 1 секунду, затем удаляем сообщение "Бот закрепил сообщение"
+            await asyncio.sleep(1)
+            async for pinned_msg in bot.iter_history(chat.id, limit=1):
+                if pinned_msg.text == "Бот закрепил сообщение":
+                    await pinned_msg.delete()
 
 async def main():
     await dp.start_polling()
