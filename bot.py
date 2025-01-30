@@ -1,9 +1,10 @@
+import os
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ParseMode
 
-TOKEN = "YOUR_BOT_TOKEN"
+TOKEN = os.getenv("BOT_TOKEN")  # Берём токен из переменных окружения
 ALLOWED_USERS = {954053674, 5743867278}  # ID пользователей, которым бот может отвечать
 
 bot = Bot(token=TOKEN)
