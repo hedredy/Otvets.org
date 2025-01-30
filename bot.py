@@ -28,7 +28,7 @@ MESSAGE = """📄 **Официальные ресурсы:**
 🌐 **Официальный сайт:** [hedred.online](https://hedred.online)  
 """
 
-@dp.message_handler(commands=["a"])
+@dp.message_handler(commands=["org"])
 async def send_message(message: types.Message):
     if message.from_user.id in ALLOWED_USERS:
         await message.answer(MESSAGE, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
