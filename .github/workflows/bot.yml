@@ -23,5 +23,5 @@ jobs:
 
       - name: Запуск бота
         env:
-          TOKEN: ${{ secrets.BOT_TOKEN }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: python bot.py
